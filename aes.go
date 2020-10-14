@@ -11,14 +11,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-// AesOpt is tructure of aes option
-type AesOpt struct {
+// AESOpt is tructure of aes option
+type AESOpt struct {
 	aesGCM cipher.AEAD
 }
 
-// NewAESOpt is function to create new configuration of new aes algorithm option
+// NewAESOpt is function to create new configuration of aes algorithm option
 // the secret must be hexa a-f & 0-9
-func NewAESOpt(secret string) (*AesOpt, error) {
+func NewAESOpt(secret string) (*AESOpt, error) {
 	if len(secret) != 64 {
 		return nil, errors.New("Secret must be 64 character")
 	}
@@ -40,12 +40,13 @@ func NewAESOpt(secret string) (*AesOpt, error) {
 		return nil, errors.Wrap(err, "NewAESOpt.cipher.NewGCM")
 	}
 
-	return &AesOpt{
+	return &AESOpt{
 		aesGCM: aesGCM,
 	}, nil
 }
 
-func (aesOpt *AesOpt) encryptAES(plaintext []byte) (string, error) {
+// Encrypt is function to encrypt data using AES algorithm
+func (aesOpt *AESOpt) Encrypt(plainText []byte) (string, error) {
 
 	//Create a nonce. Nonce should be from GCM
 	nonce := make([]byte, aesOpt.aesGCM.NonceSize())
@@ -55,13 +56,14 @@ func (aesOpt *AesOpt) encryptAES(plaintext []byte) (string, error) {
 
 	//Encrypt the data using aesGCM.Seal
 	//Since we don't want to save the nonce somewhere else in this case, we add it as a prefix to the encrypted data. The first nonce argument in Seal is the prefix.
-	ciphertext := aesOpt.aesGCM.Seal(nonce, nonce, plaintext, nil)
+	ciphertext := aesOpt.aesGCM.Seal(nonce, nonce, plainText, nil)
 	return fmt.Sprintf("%x", ciphertext), nil
 }
 
-func (aesOpt *AesOpt) decryptAES(encryptedString string) (decryptedString string, err error) {
+// Decrypt is function to decypt data using AES algorithm
+func (aesOpt *AESOpt) Decrypt(chiperText []byte) (string, error) {
 
-	enc, _ := hex.DecodeString(encryptedString)
+	enc, _ := hex.DecodeString(string(chiperText))
 
 	//Get the nonce size
 	nonceSize := aesOpt.aesGCM.NonceSize()
@@ -72,10 +74,10 @@ func (aesOpt *AesOpt) decryptAES(encryptedString string) (decryptedString string
 	nonce, ciphertext := enc[:nonceSize], enc[nonceSize:]
 
 	//Decrypt the data
-	plaintext, err := aesOpt.aesGCM.Open(nil, nonce, ciphertext, nil)
+	plainText, err := aesOpt.aesGCM.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
 		return "", errors.Wrap(err, "decryptAES.aesGCM.Open")
 	}
 
-	return fmt.Sprintf("%s", plaintext), nil
+	return fmt.Sprintf("%s", plainText), nil
 }
