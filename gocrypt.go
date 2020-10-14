@@ -7,8 +7,15 @@ type GocryptInterface interface {
 	DecryptString(string) (string, error)
 }
 
+type GocryptOption interface {
+	Encrypt(plainText []byte) (string, error)
+	Decrypt(chipherText []byte) (string, error)
+}
+
 type Option struct {
-	Aes     *AesOpt
+	AESOpt  GocryptOption
+	DESOpt  GocryptOption
+	Custom  map[string]GocryptOption
 	Prefix  string
 	Postfix string
 }
@@ -25,21 +32,26 @@ func (opt *Option) Decrypt(structVal interface{}) error {
 	return read(structVal, opt.decrypt)
 }
 
-func (opt *Option) encrypt(algo string, plain string) (string, error) {
-	plaintext := []byte(plain)
+func (opt *Option) encrypt(algo string, plainText string) (string, error) {
+	plainByte := []byte(plainText)
 	switch algo {
 	case "aes":
-		return opt.Aes.encryptAES(plaintext)
+		return opt.AESOpt.Encrypt(plainByte)
+	case "des":
+		return opt.DESOpt.Encrypt(plainByte)
 	default:
-		return opt.Aes.encryptAES(plaintext)
+		return opt.AESOpt.Encrypt(plainByte)
 	}
 }
 
-func (opt *Option) decrypt(algo string, plaintext string) (string, error) {
+func (opt *Option) decrypt(algo string, chipperText string) (string, error) {
+	chipperByte := []byte(chipperText)
 	switch algo {
 	case "aes":
-		return opt.Aes.decryptAES(plaintext)
+		return opt.AESOpt.Decrypt(chipperByte)
+	case "des":
+		return opt.DESOpt.Decrypt(chipperByte)
 	default:
-		return opt.Aes.decryptAES(plaintext)
+		return opt.AESOpt.Decrypt(chipperByte)
 	}
 }
