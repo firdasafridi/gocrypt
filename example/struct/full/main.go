@@ -31,6 +31,7 @@ type GHI struct {
 const (
 	// it's random string must be hexa  a-f & 0-9
 	aeskey = "fa89277fb1e1c344709190deeac4465c2b28396423c8534a90c86322d0ec9dcf"
+	// it's character 24 bit
 	deskey = "123456781234567812345678"
 )
 
