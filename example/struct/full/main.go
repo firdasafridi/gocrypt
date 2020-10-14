@@ -9,7 +9,7 @@ import (
 )
 
 type ABC struct {
-	A   string `json:"a"`
+	A   string `json:"a" gocrypt:"rc4"`
 	B   int    `json:"b"`
 	C   int64  `json:"c"`
 	DEF *DEF   `json:"def"`
@@ -31,7 +31,10 @@ type GHI struct {
 const (
 	// it's random string must be hexa  a-f & 0-9
 	aeskey = "fa89277fb1e1c344709190deeac4465c2b28396423c8534a90c86322d0ec9dcf"
+	// it's character 24 bit
 	deskey = "123456781234567812345678"
+	// random string key for rc4
+	rc4key = "adfasd123123ksdfsd"
 )
 
 func main() {
@@ -50,12 +53,20 @@ func main() {
 		return
 	}
 
+	// define DES option
+	rc4Opt, err := gocrypt.NewRC4Opt(rc4key)
+	if err != nil {
+		log.Println("ERR", err)
+		return
+	}
+
 	cryptRunner := gocrypt.New(&gocrypt.Option{
 		AESOpt: aesOpt,
 		DESOpt: desOpt,
+		RC4Opt: rc4Opt,
 	})
 	a := &ABC{
-		A: "halo",
+		A: "Halo this is encrypted RC4!!!",
 		DEF: &DEF{
 			GHI: &GHI{
 				G: "Halo this is encrypted aes!!!",
