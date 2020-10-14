@@ -17,13 +17,11 @@ type AesOpt struct {
 }
 
 // NewAESOpt is function to create new configuration of new aes algorithm option
-func NewAESOpt() (*AesOpt, error) {
-	bytes := make([]byte, 32) //generate a random 32 byte key for AES-256
-	if _, err := rand.Read(bytes); err != nil {
-		panic(err.Error())
+// the secret must be hexa a-f & 0-9
+func NewAESOpt(secret string) (*AesOpt, error) {
+	if len(secret) != 64 {
+		return nil, errors.New("Secret must be 64 character")
 	}
-
-	secret := hex.EncodeToString(bytes)
 	key, err := hex.DecodeString(secret)
 	if err != nil {
 		return nil, errors.Wrap(err, "NewAESOpt.hex.DecodeString")
@@ -67,7 +65,9 @@ func (aesOpt *AesOpt) decryptAES(encryptedString string) (decryptedString string
 
 	//Get the nonce size
 	nonceSize := aesOpt.aesGCM.NonceSize()
-
+	if len(enc) < nonceSize {
+		return "", errors.New("The data can't be decrypted")
+	}
 	//Extract the nonce from the encrypted data
 	nonce, ciphertext := enc[:nonceSize], enc[nonceSize:]
 

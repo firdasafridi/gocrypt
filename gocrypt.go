@@ -8,7 +8,9 @@ type GocryptInterface interface {
 }
 
 type Option struct {
-	Aes *AesOpt
+	Aes     *AesOpt
+	Prefix  string
+	Postfix string
 }
 
 func New(opt *Option) *Option {

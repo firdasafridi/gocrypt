@@ -16,20 +16,25 @@ type ABC struct {
 }
 
 type DEF struct {
-	GHI *GHI   `json:"ghi"`
-	D   string `json:"d" gocrypt:"true"`
+	D   string `json:"d" gocrypt:"aes"`
 	E   int    `json:"e"`
 	F   int64  `json:"f"`
+	GHI *GHI   `json:"ghi"`
 }
 
 type GHI struct {
-	G string `json:"g" gocrypt:"true"`
+	G string `json:"g" gocrypt:"aes"`
 	H int    `json:"h"`
 	I int64  `json:"i"`
 }
 
+const (
+	// it's random string must be hexa  a-f & 0-9
+	sample = "fa89277fb1e1c344709190deeac4465c2b28396423c8534a90c86322d0ec9dcf"
+)
+
 func main() {
-	aesOpt, err := gocrypt.NewAESOpt()
+	aesOpt, err := gocrypt.NewAESOpt(sample)
 	if err != nil {
 		log.Println("ERR", err)
 		return
@@ -38,20 +43,29 @@ func main() {
 		Aes: aesOpt,
 	})
 	a := &ABC{
-		A: "here A",
+		A: "halo",
 		DEF: &DEF{
 			GHI: &GHI{
-				G: "here",
+				G: "halo",
 			},
-			D: "a",
+			D: "halo",
 			F: 1,
 		},
 	}
-	cryptRunner.Encrypt(a)
+
+	err = cryptRunner.Encrypt(a)
+	if err != nil {
+		log.Println("ERR", err)
+		return
+	}
 	strEncrypt, _ := json.Marshal(a)
 	fmt.Println("Result the struct encrypted:", string(strEncrypt))
 
-	cryptRunner.Decrypt(a)
+	err = cryptRunner.Decrypt(a)
+	if err != nil {
+		log.Println("ERR", err)
+		return
+	}
 	strDecrypted, _ := json.Marshal(a)
 	fmt.Println("Result the struct decrypted:", string(strDecrypted))
 }
