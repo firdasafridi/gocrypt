@@ -3,8 +3,11 @@
 // Package gocrypt provide in struct tag encryption or inline encryption and decryption
 //
 // The package supported:
+//
 // DES3 — Triple Data Encryption Standard
+//
 // AES — Advanced Encryption Standard
+//
 // RC4 — stream chipper
 //
 // The AES cipher is the current U.S. government standard for all software, and is recognized worldwide.

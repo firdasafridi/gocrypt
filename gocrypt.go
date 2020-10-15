@@ -1,12 +1,12 @@
 package gocrypt
 
+// GocryptInterface is facing the format gocrypt option library
 type GocryptInterface interface {
 	Encrypt(interface{}) error
 	Decrypt(interface{}) error
-	EncryptString(string) (string, error)
-	DecryptString(string) (string, error)
 }
 
+// GocryptOption is facing the format encryption and decryption format
 type GocryptOption interface {
 	Encrypt(plainText []byte) (string, error)
 	Decrypt(chipherText []byte) (string, error)

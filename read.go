@@ -47,7 +47,10 @@ func inspectField(val reflect.Value, encDec changesValue) error {
 		}
 
 		if valueField.Kind() == reflect.Struct {
-			inspectField(valueField, encDec)
+			err := inspectField(valueField, encDec)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
