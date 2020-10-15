@@ -11,10 +11,10 @@ Library gocrypt provides a library to do encryption instruct with go field. The 
 ## The package supported:
 
 ### **DES3** — Triple Data Encryption Standard
-The AES cipher is the current U.S. government standard for all software and is recognized worldwide.
+The DES ciphers are primarily supported for PBE standard that provides the option of generating an encryption key based on a passphrase.
 
 ### **AES** — Advanced Encryption Standard
-The DES ciphers are primarily supported for PBE standard that provides the option of generating an encryption key based on a passphrase.
+The AES cipher is the current U.S. government standard for all software and is recognized worldwide.
 
 ### **RC4** — stream chipper
 The RC4 is supplied for situations that call for fast encryption, but not strong encryption. RC4 is ideal for situations that require a minimum of encryption.
