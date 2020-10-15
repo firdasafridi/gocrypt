@@ -1,7 +1,7 @@
 # gocrypt
 `gocrypt` is encryption/decryption library for golang. 
 
-Package gocrypt provide a library for do encryption in struct with go field.Package gocrypt provide in struct tag encryption or inline encryption and decryption
+Library gocrypt provides a library to do encryption instruct with go field. The library gocrypt provide instruct tag encryption or inline encryption and decryption
 
 ## Overview
 [![Go Doc](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/firdasafridi/gocrypt)
@@ -11,7 +11,7 @@ Package gocrypt provide a library for do encryption in struct with go field.Pack
 ## The package supported:
 
 ### **DES3** — Triple Data Encryption Standard
-The AES cipher is the current U.S. government standard for all software, and is recognized worldwide.
+The AES cipher is the current U.S. government standard for all software and is recognized worldwide.
 
 ### **AES** — Advanced Encryption Standard
 The DES ciphers are primarily supported for PBE standard that provides the option of generating an encryption key based on a passphrase.
@@ -85,7 +85,6 @@ func main() {
 	if err != nil {
 		log.Println("ERR", err)
 		return
-	}	return
 	}
 
 	cryptRunner := gocrypt.New(&gocrypt.Option{
@@ -117,3 +116,38 @@ func main() {
 
 ```
 
+### Others
+`gocrypt` also supported inline encryption/decryption.
+
+```go
+	func main() {
+        // sample plain text
+        sampleText := "Halo this is encrypted text!!!"
+
+        // define DES option
+        desOpt, err := gocrypt.NewDESOpt(key)
+        if err != nil {
+            log.Println("ERR", err)
+            return
+        }
+
+        // Encrypt text using DES algorithm
+        cipherText, err := desOpt.Encrypt([]byte(sampleText))
+        if err != nil {
+            log.Println("ERR", err)
+            return
+        }
+        fmt.Println("Encrypted data:", cipherText)
+
+        // Decrypt text using DES algorithm
+        plainText, err := desOpt.Decrypt([]byte(cipherText))
+        if err != nil {
+            log.Println("ERR", err)
+            return
+        }
+        fmt.Println("Decrypted data:", plainText)
+    }
+```
+
+## Limitation
+`gocrypt` only supports the string type. Need more research & development to support the library for more type data.
