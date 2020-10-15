@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// DESOpt containts all DES session option
+// DESOpt contains all DES session option
 type DESOpt struct {
 	block     cipher.Block
 	blockSize []byte
