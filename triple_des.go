@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// DESOpt containts all DES session option
 type DESOpt struct {
 	block     cipher.Block
 	blockSize []byte
@@ -21,6 +22,7 @@ func NewDESOpt(secret string) (*DESOpt, error) {
 		return nil, errors.New("secret must be 24 char")
 	}
 
+	/* #nosec */
 	block, err := des.NewTripleDESCipher([]byte(secret))
 	if err != nil {
 		return nil, errors.Wrap(err, "NewDESOpt.des.NewTripleDESCipher")

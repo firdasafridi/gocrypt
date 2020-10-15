@@ -8,6 +8,7 @@ import (
 	"github.com/firdasafridi/gocrypt"
 )
 
+// ABC is sample structure
 type ABC struct {
 	A   string `json:"a" gocrypt:"rc4"`
 	B   int    `json:"b"`
@@ -15,6 +16,7 @@ type ABC struct {
 	DEF *DEF   `json:"def"`
 }
 
+// DEF is sample structure
 type DEF struct {
 	D   string `json:"d" gocrypt:"des"`
 	E   int    `json:"e"`
@@ -22,6 +24,7 @@ type DEF struct {
 	GHI *GHI   `json:"ghi"`
 }
 
+// GHI is sample structure
 type GHI struct {
 	G string `json:"g" gocrypt:"aes"`
 	H int    `json:"h"`
@@ -53,7 +56,7 @@ func main() {
 		return
 	}
 
-	// define DES option
+	// define RC4 option
 	rc4Opt, err := gocrypt.NewRC4Opt(rc4key)
 	if err != nil {
 		log.Println("ERR", err)

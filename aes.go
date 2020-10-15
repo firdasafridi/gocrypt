@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// AESOpt is tructure of aes option
+// AESOpt containts all aes session option
 type AESOpt struct {
 	aesGCM cipher.AEAD
 }
