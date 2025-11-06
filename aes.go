@@ -47,6 +47,9 @@ func NewAESOpt(secret string) (*AESOpt, error) {
 
 // Encrypt is function to encrypt data using AES algorithm
 func (aesOpt *AESOpt) Encrypt(plainText []byte) (string, error) {
+	if aesOpt == nil || aesOpt.aesGCM == nil {
+		return "", errors.New("AESOpt is not properly initialized")
+	}
 
 	//Create a nonce. Nonce should be from GCM
 	nonce := make([]byte, aesOpt.aesGCM.NonceSize())
@@ -61,9 +64,15 @@ func (aesOpt *AESOpt) Encrypt(plainText []byte) (string, error) {
 }
 
 // Decrypt is function to decypt data using AES algorithm
-func (aesOpt *AESOpt) Decrypt(chiperText []byte) (string, error) {
+func (aesOpt *AESOpt) Decrypt(cipherText []byte) (string, error) {
+	if aesOpt == nil || aesOpt.aesGCM == nil {
+		return "", errors.New("AESOpt is not properly initialized")
+	}
 
-	enc, _ := hex.DecodeString(string(chiperText))
+	enc, err := hex.DecodeString(string(cipherText))
+	if err != nil {
+		return "", errors.Wrap(err, "Decrypt.hex.DecodeString")
+	}
 
 	//Get the nonce size
 	nonceSize := aesOpt.aesGCM.NonceSize()
@@ -79,5 +88,5 @@ func (aesOpt *AESOpt) Decrypt(chiperText []byte) (string, error) {
 		return "", errors.Wrap(err, "decryptAES.aesGCM.Open")
 	}
 
-	return fmt.Sprintf("%s", plainText), nil
+	return string(plainText), nil
 }
