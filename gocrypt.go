@@ -42,7 +42,9 @@ func (opt *Option) Decrypt(structVal interface{}) error {
 }
 
 func (opt *Option) encrypt(algo string, plainText string) (string, error) {
+	// Convert to []byte only once
 	plainByte := []byte(plainText)
+
 	switch algo {
 	case "aes":
 		if opt.AESOpt == nil {
@@ -68,7 +70,9 @@ func (opt *Option) encrypt(algo string, plainText string) (string, error) {
 }
 
 func (opt *Option) decrypt(algo string, cipherText string) (string, error) {
+	// Convert to []byte only once
 	cipherByte := []byte(cipherText)
+
 	switch algo {
 	case "aes":
 		if opt.AESOpt == nil {
