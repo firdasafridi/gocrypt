@@ -9,28 +9,54 @@ func read(v interface{}, encDec changesValue) error {
 }
 
 func inspectField(val reflect.Value, encDec changesValue) error {
+	if !val.IsValid() {
+		return nil
+	}
 	if val.Kind() == reflect.Interface && !val.IsNil() {
 		elm := val.Elem()
-		if elm.Kind() == reflect.Ptr && !elm.IsNil() && elm.Elem().Kind() == reflect.Ptr {
-			val = elm
+		if elm.IsValid() && elm.Kind() == reflect.Ptr && !elm.IsNil() {
+			elmElem := elm.Elem()
+			if elmElem.IsValid() && elmElem.Kind() == reflect.Ptr {
+				val = elm
+			}
 		}
 	}
 	if val.Kind() == reflect.Ptr {
+		if val.IsNil() {
+			return nil
+		}
 		val = val.Elem()
+	}
+	if !val.IsValid() {
+		return nil
+	}
+	if val.Kind() != reflect.Struct {
+		return nil
 	}
 	typeOfS := val.Type()
 	for i := 0; i < val.NumField(); i++ {
 		valueField := val.Field(i)
+		if !valueField.IsValid() {
+			continue
+		}
 		if valueField.Kind() == reflect.Interface && !valueField.IsNil() {
 			elm := valueField.Elem()
-			if elm.Kind() == reflect.Ptr && !elm.IsNil() && elm.Elem().Kind() == reflect.Ptr {
-				valueField = elm
+			if elm.IsValid() && elm.Kind() == reflect.Ptr && !elm.IsNil() {
+				elmElem := elm.Elem()
+				if elmElem.IsValid() && elmElem.Kind() == reflect.Ptr {
+					valueField = elm
+				}
 			}
 		}
 
 		if valueField.Kind() == reflect.Ptr {
+			if valueField.IsNil() {
+				continue
+			}
 			valueField = valueField.Elem()
-
+		}
+		if !valueField.IsValid() {
+			continue
 		}
 
 		if valueField.Kind() == reflect.String {
