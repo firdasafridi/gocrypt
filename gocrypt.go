@@ -16,12 +16,13 @@ type GocryptOption interface {
 
 // Option contains an option from initial algorithm encryptioin & decryption.
 type Option struct {
-	AESOpt  GocryptOption
-	DESOpt  GocryptOption
-	RC4Opt  GocryptOption
-	Custom  map[string]GocryptOption
-	Prefix  string
-	Postfix string
+	AESOpt       GocryptOption
+	AES256GCMOpt GocryptOption
+	DESOpt       GocryptOption
+	RC4Opt       GocryptOption
+	Custom       map[string]GocryptOption
+	Prefix       string
+	Postfix      string
 }
 
 // New create and initialize new option for struct field encryption.
@@ -51,6 +52,11 @@ func (opt *Option) encrypt(algo string, plainText string) (string, error) {
 			return "", errors.New("AESOpt is not initialized")
 		}
 		return opt.AESOpt.Encrypt(plainByte)
+	case "aes256gcm":
+		if opt.AES256GCMOpt == nil {
+			return "", errors.New("AES256GCMOpt is not initialized")
+		}
+		return opt.AES256GCMOpt.Encrypt(plainByte)
 	case "des":
 		if opt.DESOpt == nil {
 			return "", errors.New("DESOpt is not initialized")
@@ -79,6 +85,11 @@ func (opt *Option) decrypt(algo string, cipherText string) (string, error) {
 			return "", errors.New("AESOpt is not initialized")
 		}
 		return opt.AESOpt.Decrypt(cipherByte)
+	case "aes256gcm":
+		if opt.AES256GCMOpt == nil {
+			return "", errors.New("AES256GCMOpt is not initialized")
+		}
+		return opt.AES256GCMOpt.Decrypt(cipherByte)
 	case "des":
 		if opt.DESOpt == nil {
 			return "", errors.New("DESOpt is not initialized")

@@ -16,6 +16,9 @@ The DES ciphers are primarily supported for PBE standard that provides the optio
 ### **AES** — Advanced Encryption Standard
 The AES cipher is the current U.S. government standard for all software and is recognized worldwide.
 
+### **AES-256-GCM** — Advanced Encryption Standard with 256-bit key and Galois/Counter Mode
+The AES-256-GCM implementation (tag: `aes256gcm`) is designed for cross-language compatibility. Data encrypted with this implementation can be decrypted in other languages (e.g., JavaScript) using the same format. See [jscrypt](../jscrypt/) for the JavaScript companion library.
+
 ### **RC4** — stream chipper
 The RC4 is supplied for situations that call for fast encryption, but not strong encryption. RC4 is ideal for situations that require a minimum of encryption.
 
@@ -163,6 +166,82 @@ func main() {
         fmt.Println("Decrypted data:", plainText)
     }
 ```
+
+### AES-256-GCM Example (Cross-Language Compatible)
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/firdasafridi/gocrypt"
+)
+
+const (
+	// Secret must be 64 hex characters (256 bits)
+	key = "fa89277fb1e1c344709190deeac4465c2b28396423c8534a90c86322d0ec9dcf"
+)
+
+func main() {
+	// Define AES-256-GCM option
+	aesOpt, err := gocrypt.NewAES256GCMOpt(key)
+	if err != nil {
+		log.Println("ERR", err)
+		return
+	}
+
+	// Encrypt text using AES-256-GCM algorithm
+	plainText := "Hello from Go!"
+	cipherText, err := aesOpt.Encrypt([]byte(plainText))
+	if err != nil {
+		log.Println("ERR", err)
+		return
+	}
+	fmt.Println("Encrypted:", cipherText)
+
+	// This cipherText can be decrypted in JavaScript using jscrypt
+	// See: ../jscrypt/ for the JavaScript library
+}
+```
+
+### Struct Tag with AES-256-GCM
+
+```go
+type Profile struct {
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phone_number" gocrypt:"aes256gcm"`
+}
+
+func main() {
+	aesOpt, _ := gocrypt.NewAES256GCMOpt(key)
+	
+	cryptRunner := gocrypt.New(&gocrypt.Option{
+		AES256GCMOpt: aesOpt,
+	})
+
+	data := &Profile{
+		Name:        "John Doe",
+		PhoneNumber: "+1234567890",
+	}
+
+	cryptRunner.Encrypt(data)
+	// PhoneNumber is now encrypted and can be decrypted in JavaScript
+}
+```
+
+## Cross-Language Compatibility
+
+The `aes256gcm` tag provides full cross-language compatibility. Data encrypted in Go can be decrypted in JavaScript (and vice versa) using the same secret key.
+
+### Format
+- **Nonce**: 12 bytes (prefixed to ciphertext)
+- **Encoding**: Hexadecimal
+- **Key**: 64 hex characters (32 bytes = 256 bits)
+- **Algorithm**: AES-256-GCM
+
+See [jscrypt](../jscrypt/) for the JavaScript companion library.
 
 ## Limitation
 `gocrypt` only supports the string type. Need more research & development to support the library for more type data.
