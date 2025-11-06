@@ -75,7 +75,19 @@ func getTypeInfo(typ reflect.Type) *typeInfo {
 }
 
 func read(v interface{}, encDec changesValue) error {
-	return inspectField(reflect.ValueOf(v), encDec)
+	switch reflect.TypeOf(v).Kind() {
+	case reflect.Slice:
+		valueOfV := reflect.ValueOf(v)
+		for i := 0; i < valueOfV.Len(); i++ {
+			err := inspectField(valueOfV.Index(i), encDec)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	default:
+		return inspectField(reflect.ValueOf(v), encDec)
+	}
 }
 
 func inspectField(val reflect.Value, encDec changesValue) error {
@@ -133,6 +145,16 @@ func inspectField(val reflect.Value, encDec changesValue) error {
 					valueField = elm
 				}
 			}
+		}
+
+		if valueField.Kind() == reflect.Slice {
+			for i := 0; i < valueField.Len(); i++ {
+				err := inspectField(valueField.Index(i), encDec)
+				if err != nil {
+					return err
+				}
+			}
+			continue
 		}
 
 		// Handle pointer types
