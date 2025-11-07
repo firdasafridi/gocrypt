@@ -241,7 +241,5 @@ The `aes256gcm` tag provides full cross-language compatibility. Data encrypted i
 - **Key**: 64 hex characters (32 bytes = 256 bits)
 - **Algorithm**: AES-256-GCM
 
-See [jscrypt](../jscrypt/) for the JavaScript companion library.
-
 ## Limitation
 `gocrypt` only supports the string type. Need more research & development to support the library for more type data.
